@@ -1,0 +1,16 @@
+version: "2"
+sql:
+  - schema: "./sql/schema/"
+    queries: "./sql/query/"
+    engine: "postgresql"
+    gen:
+      go:
+        package: "db"
+        out: "pkg/db"
+        sql_package: "pgx/v5"
+        emit_empty_slices: true
+        overrides:
+          - db_type: "bigint"
+            go_type: "int64"
+          - db_type: "pg_catalog.int8"
+            go_type: "int64"
