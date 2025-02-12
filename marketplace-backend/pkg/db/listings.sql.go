@@ -29,7 +29,6 @@ ORDER BY
   CASE WHEN $1::text = 'price' AND $2::text = 'desc' THEN price END DESC,
   CASE WHEN $1::text = 'timestamp' AND $2::text = 'asc' THEN timestamp END ASC,
   CASE WHEN $1::text = 'timestamp' AND $2::text = 'desc' THEN timestamp END DESC
-  -- CASE WHEN sqlc.arg('sort_by')::text = '' OR sqlc.arg('sort_by')::text IS NULL THEN timestamp END DESC
 limit $4
 OFFSET $3
 `
@@ -50,10 +49,6 @@ type GetLatestListingsRow struct {
 	Height    int32
 }
 
-// LIMIT CASE
-//
-//	WHEN sqlc.arg('limit')::int > 0 THEN sqlc.arg('limit')::int
-//	ELSE 9
 func (q *Queries) GetLatestListings(ctx context.Context, arg GetLatestListingsParams) ([]GetLatestListingsRow, error) {
 	rows, err := q.db.Query(ctx, getLatestListings,
 		arg.SortBy,
@@ -181,6 +176,22 @@ func (q *Queries) InsertListing(ctx context.Context, arg InsertListingParams) er
 		arg.Signature,
 		arg.Height,
 	)
+	return err
+}
+
+const updateListingValidity = `-- name: UpdateListingValidity :exec
+UPDATE listings
+SET valid = $2
+WHERE signature = $1
+`
+
+type UpdateListingValidityParams struct {
+	Signature []byte
+	Valid     bool
+}
+
+func (q *Queries) UpdateListingValidity(ctx context.Context, arg UpdateListingValidityParams) error {
+	_, err := q.db.Exec(ctx, updateListingValidity, arg.Signature, arg.Valid)
 	return err
 }
 

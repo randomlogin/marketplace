@@ -39,7 +39,7 @@ func getListingHandler(ctx *Context, params GetListingParams) (*ResponseListing,
 		name = name[1:]
 	}
 
-	listings, err := ctx.DB.GetListingByName(ctx, name)
+	listings, err := ctx.DB.GetValidListingByName(ctx, name)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get listing: %w", err)
 	}

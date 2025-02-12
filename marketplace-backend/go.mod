@@ -12,7 +12,7 @@ require (
 	github.com/jackc/pgx/v5 v5.7.2 // indirect
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
-	github.com/spacesprotocol/explorer-indexer v0.0.0-20250205170239-b49f0ab40089 // indirect
+	github.com/spacesprotocol/explorer-indexer v0.0.0-20250212142903-90f68ee6f803 // indirect
 	golang.org/x/crypto v0.32.0 // indirect
 	golang.org/x/net v0.34.0 // indirect
 	golang.org/x/sync v0.10.0 // indirect

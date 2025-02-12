@@ -60,23 +60,8 @@ SELECT *
 FROM listings
 WHERE name = $1 and valid = true;
 
--- name: GetListingsAfterBlock :many
--- SELECT * 
--- FROM listings
--- WHERE updated_height >= $1;
---
--- -- name: UpsertListing :exec
--- INSERT INTO listings (name, price, seller_address, signature, valid)
--- VALUES ($1, $2, $3, $4, $5)
--- ON CONFLICT (signature)
--- DO UPDATE SET
---         valid = excluded.valid,  -- Re-validate if it exists
---         name = EXCLUDED.name,
---         price = EXCLUDED.price,
---         seller_address = EXCLUDED.seller_address,
---         updated_height = EXCLUDED.updated_height;
---
--- -- name: UpdateListingValidity :exec
--- UPDATE listings
--- SET valid = $2, updated_height = $3
--- WHERE signature = $1;
+
+-- name: UpdateListingValidity :exec
+UPDATE listings
+SET valid = $2
+WHERE signature = $1;

@@ -3,6 +3,7 @@ import Header from './components/Header';
 import Home from './Home';
 import PostListing from './PostListing';
 import ViewListing from './ViewListing';
+import NotFound from './NotFound';
 import FAQ from './FAQ';
 
 export function App() {
@@ -15,6 +16,7 @@ export function App() {
           <Route path="/post" component={PostListing} />
           <Route path="/space/:name" component={ViewListing} />
           <Route path="/faq" component={FAQ} />
+          <Route default component={NotFound} />
         </Router>
       </main>
     </div>

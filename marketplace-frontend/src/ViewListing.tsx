@@ -3,6 +3,7 @@ import { route } from 'preact-router';
 import { getSpaceListing, ListingResponse } from './api';
 import CopyCommand from './components/CopyCommand';
 import { NETWORK, getSpaceExplorerLink } from './constants';
+import { Ghost } from 'lucide-react';
 
 interface Props {
   name: string;
@@ -49,20 +50,47 @@ export default function ViewListing({ name }: Props) {
     return `space-cli --chain ${NETWORK} buy ${listing.space} ${listing.price} --seller ${listing.seller} --signature ${listing.signature} `;
   };
 
-  if (loading) {
-    return <div className="text-center">Loading...</div>;
+    if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-64">
+        <div className="text-gray-600">Loading...</div>
+      </div>
+    );
   }
 
-  if (error) {
+
+    if (error) {
     return (
-      <div className="bg-white rounded-lg p-4">
-        <div className="text-red-500">Error: {error}</div>
-        <button 
-          onClick={handleBack}
-          className="mt-4 text-blue-600 hover:text-blue-800"
-        >
-          Back to listings
-        </button>
+      <div className="max-w-2xl mx-auto mt-8">
+        <div className="bg-white rounded-lg shadow-lg p-8">
+          <div className="flex flex-col items-center text-center">
+            <div className="mb-4">
+            <Ghost className="h-24 w-24 text-blue-600" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              No valid listings found for @{name}
+            </h2>
+            <p className="text-gray-600 mb-6">
+              The listing you're looking for might have become invalid or never existed.
+            </p>
+            <button onClick={handleBack} className="inline-flex items-center px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200" >
+              <svg
+                className="w-4 h-4 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                />
+              </svg>
+              Back to listings
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
