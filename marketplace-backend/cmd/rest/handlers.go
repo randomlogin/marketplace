@@ -42,7 +42,7 @@ func getListingHandler(ctx *Context, params GetListingParams) (*ResponseListing,
 
 	listings, err := ctx.DB.GetValidListingByName(ctx, name)
 	if err != nil {
-		log.Printf("failed to get listing: %w", err)
+		log.Printf("failed to get listing: %s", err)
 		return nil, fmt.Errorf("failed to get listing")
 	}
 
@@ -84,7 +84,7 @@ func getListingsHandler(ctx *Context, params GetListingsParams) ([]ResponseListi
 
 	dbListings, err := ctx.DB.GetLatestListings(ctx, dbParams)
 	if err != nil {
-		log.Printf("failed to get listings: %w", err)
+		log.Printf("failed to get listings: %s", err)
 		return nil, fmt.Errorf("failed to get listings")
 	}
 	if len(dbListings) == 0 {
@@ -115,12 +115,12 @@ type HealthCheckResult = struct {
 func healthCheckHandler(ctx *Context, _ struct{}) (*HealthCheckResult, error) {
 	res, err := ctx.DB.GetLatestBlock(ctx)
 	if err != nil {
-		log.Printf("failed to perform a healthcheck: %w", err)
+		log.Printf("failed to perform a healthcheck: %s", err)
 		return nil, fmt.Errorf("failed to perform a healthcheck")
 	}
 	serverInfo, err := ctx.Spaces.GetServerInfo(ctx)
 	if err != nil {
-		log.Printf("failed to perform a healthcheck: %w", err)
+		log.Printf("failed to perform a healthcheck: %s", err)
 		return nil, fmt.Errorf("failed to perform a healthcheck")
 	}
 	toReturn := &HealthCheckResult{
@@ -151,7 +151,7 @@ func postListingHandler(ctx *Context, listing node.Listing) (*node.Listing, erro
 
 	signatureBytes, err := hex.DecodeString(listing.Signature)
 	if err != nil {
-		return nil, fmt.Errorf("invalid signature format: %w", err)
+		return nil, fmt.Errorf("invalid signature format: %s", err)
 	}
 
 	spaceName := listing.Space
@@ -167,7 +167,7 @@ func postListingHandler(ctx *Context, listing node.Listing) (*node.Listing, erro
 		Valid:     true,
 	})
 	if err != nil {
-		log.Printf("failed to create listing: %w", err)
+		log.Printf("failed to create listing: %s", err)
 		return nil, fmt.Errorf("failed to create listing")
 	}
 
