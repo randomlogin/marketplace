@@ -60,14 +60,12 @@ func syncBlocks(pg *pgx.Conn, sc *node.SpacesClient) error {
 	log.Printf("found the height %d in the db", height)
 
 	//invalidate all listings
-	var seenNames []string
-
-	// var spacesBlock *node.SpacesBlock
 	height++
 	for {
 		if height > sinfo.Tip.Height {
 			break
 		}
+		var seenNames []string
 
 		log.Printf("trying to get the block %d from the chain", height)
 		spacesBlock, err := sc.GetBlockMeta(ctx, height)
@@ -89,8 +87,7 @@ func syncBlocks(pg *pgx.Conn, sc *node.SpacesClient) error {
 
 		}
 
-		// log.Print(len(seenNames))
-		// log.Print(seenNames)
+		log.Printf("checking spaces: %s", seenNames)
 		for _, name := range seenNames {
 			var spaceName string
 			if len(name) > 0 && name[0] == '@' {
@@ -101,21 +98,20 @@ func syncBlocks(pg *pgx.Conn, sc *node.SpacesClient) error {
 			if err != nil {
 				return err
 			}
-			// log.Print(len(listings))
 			for _, listing := range listings {
 				sign := hex.EncodeToString(listing.Signature)
 				err = sc.VerifyListing(context.Background(), node.Listing{Space: listing.Name, Seller: listing.Seller, Signature: sign, Price: int(listing.Price)})
 				if err != nil {
-					listingValidityUpdate := db.UpdateListingValidityParams{Signature: listing.Signature, Valid: false}
-					q.UpdateListingValidity(ctx, listingValidityUpdate)
+					listingValidityUpdate := db.UpdateListingValidityAndHeightParams{Signature: listing.Signature, Valid: false, Height: int32(height)}
+					q.UpdateListingValidityAndHeight(ctx, listingValidityUpdate)
 				} else {
-					listingValidityUpdate := db.UpdateListingValidityParams{Signature: listing.Signature, Valid: true}
-					q.UpdateListingValidity(ctx, listingValidityUpdate)
+					listingValidityUpdate := db.UpdateListingValidityAndHeightParams{Signature: listing.Signature, Valid: true}
+					q.UpdateListingValidityAndHeight(ctx, listingValidityUpdate)
 				}
 			}
 		}
 
-		err = q.UpsertBlock(ctx, db.UpsertBlockParams{Height: int32(height) - 1, Hash: spacesBlock.Hash})
+		err = q.UpsertBlock(ctx, db.UpsertBlockParams{Height: int32(height), Hash: spacesBlock.Hash})
 		if err != nil {
 			return err
 		}

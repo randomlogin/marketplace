@@ -38,10 +38,10 @@ func main() {
 	healthCheck := NewAction(http.MethodGet, healthCheckHandler)
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/healthcheck", healthCheck.BuildHandler(pg, spacesClient))
-	mux.HandleFunc("/space/", getListing.BuildHandler(pg, spacesClient))
-	mux.HandleFunc("/listings", getListings.BuildHandler(pg, spacesClient))
-	mux.HandleFunc("/postListing", postListing.BuildHandler(pg, spacesClient))
+	mux.HandleFunc("/healthcheck", healthCheck.BuildLoggedHandler(pg, spacesClient))
+	mux.HandleFunc("/space/", getListing.BuildLoggedHandler(pg, spacesClient))
+	mux.HandleFunc("/listings", getListings.BuildLoggedHandler(pg, spacesClient))
+	mux.HandleFunc("/postListing", postListing.BuildLoggedHandler(pg, spacesClient))
 
 	srv := &http.Server{
 		Addr:    ":" + port,

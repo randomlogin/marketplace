@@ -179,19 +179,20 @@ func (q *Queries) InsertListing(ctx context.Context, arg InsertListingParams) er
 	return err
 }
 
-const updateListingValidity = `-- name: UpdateListingValidity :exec
+const updateListingValidityAndHeight = `-- name: UpdateListingValidityAndHeight :exec
 UPDATE listings
-SET valid = $2
+SET valid = $2, height = $3
 WHERE signature = $1
 `
 
-type UpdateListingValidityParams struct {
+type UpdateListingValidityAndHeightParams struct {
 	Signature []byte
 	Valid     bool
+	Height    int32
 }
 
-func (q *Queries) UpdateListingValidity(ctx context.Context, arg UpdateListingValidityParams) error {
-	_, err := q.db.Exec(ctx, updateListingValidity, arg.Signature, arg.Valid)
+func (q *Queries) UpdateListingValidityAndHeight(ctx context.Context, arg UpdateListingValidityAndHeightParams) error {
+	_, err := q.db.Exec(ctx, updateListingValidityAndHeight, arg.Signature, arg.Valid, arg.Height)
 	return err
 }
 

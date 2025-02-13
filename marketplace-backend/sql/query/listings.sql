@@ -63,7 +63,7 @@ FROM listings
 WHERE name = $1 and valid = true;
 
 
--- name: UpdateListingValidity :exec
+-- name: UpdateListingValidityAndHeight :exec
 UPDATE listings
-SET valid = $2
+SET valid = $2, height = $3
 WHERE signature = $1;

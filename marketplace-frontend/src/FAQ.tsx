@@ -32,7 +32,7 @@ export default function FAQ() {
                 <li>Use the following command:</li>
               </ol>
               <pre className="bg-gray-100 p-4 rounded-md mt-2 overflow-x-auto font-mono text-sm">
-                space-cli --chain mainnet sell @spacename [price]
+                {'space-cli --chain mainnet sell @spacename <price>'}
               </pre>
             </div>
           </div>
@@ -48,7 +48,7 @@ export default function FAQ() {
             <div className="mt-4">
               <p className="font-medium mb-2">Command syntax:</p>
               <pre className="bg-gray-100 p-4 rounded-md overflow-x-auto font-mono text-sm">
-                space-cli --chain mainnet buy @spacename price --seller seller_address --signature signature_hash [--fee-rate=rate]
+                space-cli --chain mainnet buy @spacename {'<price>'} --seller {'<seller_address>'} --signature {'<signature>'} [--fee-rate=rate]
               </pre>
             </div>
           </div>

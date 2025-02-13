@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/hex"
 	"fmt"
+	"log"
 
 	"github.com/spacesprotocol/explorer-indexer/pkg/node"
 	"github.com/spacesprotocol/marketplace/pkg/db"
@@ -125,7 +126,11 @@ func postListingHandler(ctx *Context, listing node.Listing) (*node.Listing, erro
 		if len(err.Error()) <= 12 {
 			return nil, err
 		}
-		return nil, fmt.Errorf(err.Error()[12:])
+		if err.Error()[:12] == "rpc client: " {
+			return nil, fmt.Errorf(err.Error()[12:])
+		}
+		log.Printf("got an error while trying to verify: %s", err)
+		return nil, fmt.Errorf("An error occured")
 	}
 
 	signatureBytes, err := hex.DecodeString(listing.Signature)
