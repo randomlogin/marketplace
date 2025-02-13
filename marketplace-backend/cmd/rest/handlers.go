@@ -122,6 +122,7 @@ func postListingHandler(ctx *Context, listing node.Listing) (*node.Listing, erro
 		return nil, fmt.Errorf("missing required fields")
 	}
 
+	listing.NormalizeSpace()
 	if err := ctx.Spaces.VerifyListing(ctx, listing); err != nil {
 		if len(err.Error()) <= 12 {
 			return nil, err

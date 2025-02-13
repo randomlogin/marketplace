@@ -15,7 +15,7 @@ require (
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/rs/zerolog v1.33.0 // indirect
-	github.com/spacesprotocol/explorer-indexer v0.0.0-20250212142903-90f68ee6f803 // indirect
+	github.com/spacesprotocol/explorer-indexer v0.0.0-20250213161401-ffa26fba33ce // indirect
 	golang.org/x/crypto v0.32.0 // indirect
 	golang.org/x/net v0.34.0 // indirect
 	golang.org/x/sync v0.10.0 // indirect
