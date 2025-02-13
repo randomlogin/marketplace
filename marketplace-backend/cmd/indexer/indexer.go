@@ -100,7 +100,9 @@ func syncBlocks(pg *pgx.Conn, sc *node.SpacesClient) error {
 			}
 			for _, listing := range listings {
 				sign := hex.EncodeToString(listing.Signature)
-				err = sc.VerifyListing(context.Background(), node.Listing{Space: listing.Name, Seller: listing.Seller, Signature: sign, Price: int(listing.Price)})
+				listingToCheck := node.Listing{Space: listing.Name, Seller: listing.Seller, Signature: sign, Price: int(listing.Price)}
+				listingToCheck.NormalizeSpace()
+				err = sc.VerifyListing(context.Background(), listingToCheck)
 				if err != nil {
 					listingValidityUpdate := db.UpdateListingValidityAndHeightParams{Signature: listing.Signature, Valid: false, Height: int32(height)}
 					q.UpdateListingValidityAndHeight(ctx, listingValidityUpdate)
