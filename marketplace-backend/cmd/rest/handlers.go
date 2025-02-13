@@ -88,7 +88,7 @@ func getListingsHandler(ctx *Context, params GetListingsParams) ([]ResponseListi
 		return nil, fmt.Errorf("failed to get listings")
 	}
 	if len(dbListings) == 0 {
-		return nil, nil
+		return []ResponseListing{}, nil
 	}
 
 	listings := make([]ResponseListing, 0, len(dbListings))
