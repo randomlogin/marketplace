@@ -4,7 +4,7 @@ import { getSpaceListing, ListingResponse } from './api';
 import CopyCommand from './components/CopyCommand';
 import { NETWORK, getSpaceExplorerLink } from './constants';
 import { Ghost } from 'lucide-react';
-import { normalizeSpace } from "./helpers"
+import { normalizeSpace, formatBTC } from "./helpers"
 
 interface Props {
   name: string;
@@ -130,7 +130,7 @@ export default function ViewListing({ name }: Props) {
         <div className="space-y-6">
           <div className="bg-blue-50 p-4 rounded-lg">
             <div className="text-lg font-medium text-blue-900">Price</div>
-            <div className="text-3xl font-bold text-blue-700">{listing.price} sats</div>
+            <div className="text-3xl font-bold text-blue-700">{formatBTC(listing.price)}</div>
           </div>
           <div className="border-t border-gray-200 pt-6">
             <div className="grid grid-cols-1 gap-4">

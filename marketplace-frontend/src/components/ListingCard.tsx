@@ -1,4 +1,5 @@
 import { ListingResponse } from '../api';
+import { formatBTC } from '../helpers';
 
 interface ListingCardProps {
   listing: ListingResponse;
@@ -21,7 +22,7 @@ export default function ListingCard({ listing, currentPage }: ListingCardProps) 
         <div class="flex justify-between items-start mb-4">
           <h2 class="text-xl font-semibold text-gray-900">@{listing.space}</h2>
           <span class="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-medium">
-            {listing.price} sats
+            {formatBTC(listing.price)} 
           </span>
         </div>
         <div class="mt-4 pt-4 border-t border-gray-100">
