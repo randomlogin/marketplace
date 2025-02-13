@@ -42,7 +42,8 @@ func getListingHandler(ctx *Context, params GetListingParams) (*ResponseListing,
 
 	listings, err := ctx.DB.GetValidListingByName(ctx, name)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get listing: %w", err)
+		log.Printf("failed to get listing: %w", err)
+		return nil, fmt.Errorf("failed to get listing")
 	}
 
 	if len(listings) == 0 {
@@ -83,7 +84,8 @@ func getListingsHandler(ctx *Context, params GetListingsParams) ([]ResponseListi
 
 	dbListings, err := ctx.DB.GetLatestListings(ctx, dbParams)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get listings: %w", err)
+		log.Printf("failed to get listings: %w", err)
+		return nil, fmt.Errorf("failed to get listings")
 	}
 	if len(dbListings) == 0 {
 		return nil, fmt.Errorf("no listings found")
@@ -104,16 +106,29 @@ func getListingsHandler(ctx *Context, params GetListingsParams) ([]ResponseListi
 }
 
 type HealthCheckResult = struct {
-	Height int32  `json:"height"`
-	Hash   string `json:"hash"`
+	Height       int32  `json:"height"`
+	Hash         string `json:"hash"`
+	SpacedHash   string `json:"spaced_hash"`
+	SpacedHeight int    `json:"spaced_height"`
 }
 
 func healthCheckHandler(ctx *Context, _ struct{}) (*HealthCheckResult, error) {
 	res, err := ctx.DB.GetLatestBlock(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("failed to perform a healthcheck: %w", err)
+		log.Printf("failed to perform a healthcheck: %w", err)
+		return nil, fmt.Errorf("failed to perform a healthcheck")
 	}
-	toReturn := &HealthCheckResult{Height: res.Height, Hash: hex.EncodeToString(res.Hash)}
+	serverInfo, err := ctx.Spaces.GetServerInfo(ctx)
+	if err != nil {
+		log.Printf("failed to perform a healthcheck: %w", err)
+		return nil, fmt.Errorf("failed to perform a healthcheck")
+	}
+	toReturn := &HealthCheckResult{
+		Height:       res.Height,
+		Hash:         hex.EncodeToString(res.Hash),
+		SpacedHash:   hex.EncodeToString(serverInfo.Tip.Hash),
+		SpacedHeight: serverInfo.Tip.Height,
+	}
 	return toReturn, nil
 }
 
@@ -152,7 +167,8 @@ func postListingHandler(ctx *Context, listing node.Listing) (*node.Listing, erro
 		Valid:     true,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("failed to create listing: %w", err)
+		log.Printf("failed to create listing: %w", err)
+		return nil, fmt.Errorf("failed to create listing")
 	}
 
 	return &listing, nil
