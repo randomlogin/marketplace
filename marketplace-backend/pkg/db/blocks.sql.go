@@ -21,6 +21,30 @@ func (q *Queries) GetBlocksMaxHeight(ctx context.Context) (int32, error) {
 	return column_1, err
 }
 
+const getLatestBlock = `-- name: GetLatestBlock :one
+WITH latest_block AS (
+    SELECT height, hash
+    FROM blocks
+    ORDER BY height DESC
+    LIMIT 1
+)
+SELECT
+    COALESCE((SELECT height FROM latest_block), -2)::integer as height,
+    COALESCE((SELECT hash FROM latest_block), '\x')::bytea as hash
+`
+
+type GetLatestBlockRow struct {
+	Height int32
+	Hash   []byte
+}
+
+func (q *Queries) GetLatestBlock(ctx context.Context) (GetLatestBlockRow, error) {
+	row := q.db.QueryRow(ctx, getLatestBlock)
+	var i GetLatestBlockRow
+	err := row.Scan(&i.Height, &i.Hash)
+	return i, err
+}
+
 const insertBlock = `-- name: InsertBlock :exec
 INSERT INTO blocks (
     hash,

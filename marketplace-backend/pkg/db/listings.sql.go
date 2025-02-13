@@ -201,15 +201,17 @@ INSERT INTO listings (
     price,
     seller,
     signature,
-    height
+    height,
+    valid
 )
-VALUES ($1, $2, $3, $4, $5)
+VALUES ($1, $2, $3, $4, $5, $6)
 ON CONFLICT (signature)
 DO UPDATE SET
         name = EXCLUDED.name,
         price = EXCLUDED.price,
         seller = EXCLUDED.seller,
-        height = EXCLUDED.height
+        height = EXCLUDED.height,
+        valid = EXCLUDED.valid
 `
 
 type UpsertListingParams struct {
@@ -218,6 +220,7 @@ type UpsertListingParams struct {
 	Seller    string
 	Signature []byte
 	Height    int32
+	Valid     bool
 }
 
 func (q *Queries) UpsertListing(ctx context.Context, arg UpsertListingParams) error {
@@ -227,6 +230,7 @@ func (q *Queries) UpsertListing(ctx context.Context, arg UpsertListingParams) er
 		arg.Seller,
 		arg.Signature,
 		arg.Height,
+		arg.Valid,
 	)
 	return err
 }

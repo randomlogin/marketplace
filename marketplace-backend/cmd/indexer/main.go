@@ -20,28 +20,26 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-
 	sc := node.SpacesClient{Client: spacesClient}
 
-	connCtx, cancel := context.WithTimeout(context.Background(), time.Minute)
-
-	pg, err := pgx.Connect(connCtx, os.Getenv("POSTGRES_URI"))
-	cancel()
-
-	if err != nil {
-		log.Printf("failed to connect to database: %v", err)
-		time.Sleep(time.Second)
-	}
-
-	defer pg.Close(context.Background())
-
 	for {
+		connCtx, cancel := context.WithTimeout(context.Background(), time.Minute)
+		pg, err := pgx.Connect(connCtx, os.Getenv("POSTGRES_URI"))
+		cancel()
+		if err != nil {
+			log.Printf("failed to connect to database: %v", err)
+			time.Sleep(time.Second)
+			continue
+		}
+
 		if err := syncBlocks(pg, &sc); err != nil {
 			log.Println(err)
 			pg.Close(context.Background())
 			time.Sleep(time.Second)
 			continue
 		}
+
+		pg.Close(context.Background())
 		time.Sleep(time.Duration(updateInterval) * time.Second)
 	}
 }
@@ -59,7 +57,7 @@ func syncBlocks(pg *pgx.Conn, sc *node.SpacesClient) error {
 		return err
 	}
 
-	log.Printf("the height is %d", height)
+	log.Printf("found the height %d in the db", height)
 
 	//invalidate all listings
 	var seenNames []string
@@ -71,7 +69,7 @@ func syncBlocks(pg *pgx.Conn, sc *node.SpacesClient) error {
 			break
 		}
 
-		log.Printf("got block of hewight %d", height)
+		log.Printf("trying to get the block %d from the chain", height)
 		spacesBlock, err := sc.GetBlockMeta(ctx, height)
 		if err != nil {
 			break

@@ -1,3 +1,4 @@
+import { normalizeSpace } from "./helpers"
 const API_BASE = "/api"
 
 export interface Listing {
@@ -7,7 +8,6 @@ export interface Listing {
   signature: string;
 }
 
-// const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8123';
 
 export interface ListingResponse {
   space: string;
@@ -53,9 +53,8 @@ export async function getListings(params: ListingsParams = {}): Promise<ListingR
 }
 
 export async function getSpaceListing(name: string): Promise<ListingResponse> {
-  // Remove @ symbol if present, as backend handles this
-  const spaceName = name.startsWith('@') ? name.substring(1) : name;
-  const response = await fetch(`${API_BASE}/space/@${spaceName}`);
+  name = normalizeSpace(name)
+  const response = await fetch(`${API_BASE}/space/@${name}`);
   if (!response.ok) {
     if (response.status === 404) {
       throw new Error(`No listings found for ${name}`);

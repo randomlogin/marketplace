@@ -4,6 +4,7 @@ import { getSpaceListing, ListingResponse } from './api';
 import CopyCommand from './components/CopyCommand';
 import { NETWORK, getSpaceExplorerLink } from './constants';
 import { Ghost } from 'lucide-react';
+import { normalizeSpace } from "./helpers"
 
 interface Props {
   name: string;
@@ -68,7 +69,7 @@ export default function ViewListing({ name }: Props) {
             <Ghost className="h-24 w-24 text-blue-600" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              No valid listings found for @{name}
+              No valid listings found for @{normalizeSpace(name)}
             </h2>
             <p className="text-gray-600 mb-6">
               The listing you're looking for might have become invalid or never existed.

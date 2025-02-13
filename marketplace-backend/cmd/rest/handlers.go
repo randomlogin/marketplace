@@ -102,6 +102,20 @@ func getListingsHandler(ctx *Context, params GetListingsParams) ([]ResponseListi
 	return listings, nil
 }
 
+type HealthCheckResult = struct {
+	Height int32  `json:"height"`
+	Hash   string `json:"hash"`
+}
+
+func healthCheckHandler(ctx *Context, _ struct{}) (*HealthCheckResult, error) {
+	res, err := ctx.DB.GetLatestBlock(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to perform a healthcheck: %w", err)
+	}
+	toReturn := &HealthCheckResult{Height: res.Height, Hash: hex.EncodeToString(res.Hash)}
+	return toReturn, nil
+}
+
 func postListingHandler(ctx *Context, listing node.Listing) (*node.Listing, error) {
 	if listing.Space == "" || listing.Price < 0 || listing.Seller == "" || listing.Signature == "" {
 		return nil, fmt.Errorf("missing required fields")
@@ -129,6 +143,7 @@ func postListingHandler(ctx *Context, listing node.Listing) (*node.Listing, erro
 		Price:     int64(listing.Price),
 		Seller:    listing.Seller,
 		Signature: signatureBytes,
+		Valid:     true,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to create listing: %w", err)

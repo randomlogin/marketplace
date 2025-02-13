@@ -18,3 +18,13 @@ SELECT COALESCE(MAX(height), -1)::integer
 FROM blocks;
 
 
+-- name: GetLatestBlock :one
+WITH latest_block AS (
+    SELECT height, hash
+    FROM blocks
+    ORDER BY height DESC
+    LIMIT 1
+)
+SELECT
+    COALESCE((SELECT height FROM latest_block), -2)::integer as height,
+    COALESCE((SELECT hash FROM latest_block), '\x')::bytea as hash;

@@ -35,8 +35,10 @@ func main() {
 	getListing := NewAction(http.MethodGet, getListingHandler)
 	getListings := NewAction(http.MethodGet, getListingsHandler)
 	postListing := NewAction(http.MethodPost, postListingHandler)
+	healthCheck := NewAction(http.MethodGet, healthCheckHandler)
 
 	mux := http.NewServeMux()
+	mux.HandleFunc("/healthcheck", healthCheck.BuildHandler(pg, spacesClient))
 	mux.HandleFunc("/space/", getListing.BuildHandler(pg, spacesClient))
 	mux.HandleFunc("/listings", getListings.BuildHandler(pg, spacesClient))
 	mux.HandleFunc("/postListing", postListing.BuildHandler(pg, spacesClient))
