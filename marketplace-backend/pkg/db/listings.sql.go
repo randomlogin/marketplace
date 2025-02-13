@@ -118,7 +118,7 @@ func (q *Queries) GetListingByName(ctx context.Context, name string) ([]Listing,
 const getValidListingByName = `-- name: GetValidListingByName :many
 SELECT name, price, seller, signature, timestamp, height, valid 
 FROM listings
-WHERE name = $1 and valid = true
+WHERE name = $1 and valid = true order by price asc limit 1
 `
 
 func (q *Queries) GetValidListingByName(ctx context.Context, name string) ([]Listing, error) {

@@ -60,7 +60,7 @@ WHERE name = $1 order by price asc;
 -- name: GetValidListingByName :many
 SELECT * 
 FROM listings
-WHERE name = $1 and valid = true;
+WHERE name = $1 and valid = true order by price asc limit 1;
 
 
 -- name: UpdateListingValidityAndHeight :exec
