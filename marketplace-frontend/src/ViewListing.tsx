@@ -4,7 +4,7 @@ import { getSpaceListing, ListingResponse } from './api';
 import CopyCommand from './components/CopyCommand';
 import { NETWORK, getSpaceExplorerLink } from './constants';
 import { Ghost } from 'lucide-react';
-import { normalizeSpace, formatBTC } from "./helpers"
+import { normalizeSpace, formatBTC, spaceToUnicode, isPunycode } from "./helpers";
 
 interface Props {
   name: string;
@@ -27,13 +27,14 @@ export default function ViewListing({ name }: Props) {
       setLoading(true);
       setError(null);
       const data = await getSpaceListing(name);
-      setListing(data)
+      setListing(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoading(false);
     }
   }
+  
   const handleBack = () => {
     const params = new URLSearchParams(window.location.search);
     const fromPage = params.get('from');
@@ -45,13 +46,12 @@ export default function ViewListing({ name }: Props) {
     }
   };
 
-
   const getBuyCommand = () => {
     if (!listing) return '';
     return `space-cli --chain ${NETWORK} buy ${listing.space} ${listing.price} --seller ${listing.seller} --signature ${listing.signature} `;
   };
 
-    if (loading) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center min-h-64">
         <div className="text-gray-600">Loading...</div>
@@ -59,17 +59,28 @@ export default function ViewListing({ name }: Props) {
     );
   }
 
-
-    if (error) {
+  if (error) {
+    // Get the normalized space name
+    const normalizedName = normalizeSpace(name);
+    
+    // Format the display name - if punycode, show decoded version in parentheses
+    let displayName = normalizedName;
+    if (isPunycode(normalizedName)) {
+      const decoded = spaceToUnicode(normalizedName);
+      if (decoded !== normalizedName) {
+        displayName = `${normalizedName} (${decoded})`;
+      }
+    }
+    
     return (
       <div className="max-w-2xl mx-auto mt-8">
         <div className="bg-white rounded-lg shadow-lg p-8">
           <div className="flex flex-col items-center text-center">
             <div className="mb-4">
-            <Ghost className="h-24 w-24 text-blue-600" />
+              <Ghost className="h-24 w-24 text-blue-600" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              No valid listings found for @{normalizeSpace(name)}
+              No valid listings found for @{displayName}
             </h2>
             <p className="text-gray-600 mb-6">
               The listing you're looking for might have become invalid or never existed.
@@ -98,12 +109,21 @@ export default function ViewListing({ name }: Props) {
 
   if (!listing) return null;
 
+  // Format the display space name - if punycode, show decoded version in parentheses
+  let displaySpace = listing.space;
+  if (isPunycode(listing.space)) {
+    const decoded = spaceToUnicode(listing.space);
+    if (decoded !== listing.space) {
+      displaySpace = `${listing.space} (${decoded})`;
+    }
+  }
+
   return (
     <div className="bg-white rounded-lg shadow-xl max-w-2xl mx-auto">
       <div className="p-6">
         <div className="flex justify-between items-start mb-6">
           <div className="flex items-center gap-4">
-            <h2 className="text-2xl font-bold text-gray-900">@{listing.space}</h2>
+            <h2 className="text-2xl font-bold text-gray-900">@{displaySpace}</h2>
             <a href={getSpaceExplorerLink(listing.space)} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:text-blue-800 hover:underline">
               view on explorer
             </a>
@@ -127,6 +147,7 @@ export default function ViewListing({ name }: Props) {
             </button>
           </div>
         </div>
+        
         <div className="space-y-6">
           <div className="bg-blue-50 p-4 rounded-lg">
             <div className="text-lg font-medium text-blue-900">Price</div>

@@ -1,5 +1,6 @@
 import { route } from 'preact-router';
 import { useState } from 'preact/hooks';
+import { normalizeSpace, spaceToPunycode } from '../helpers';
 
 export default function Header() {
   const [search, setSearch] = useState('');
@@ -7,9 +8,11 @@ export default function Header() {
   const handleSearch = (e: Event) => {
     e.preventDefault();
     if (search.trim()) {
-      // Remove @ if present and route to space page
-      const spaceName = search.trim().replace(/^@/, '');
-      route(`/space/${spaceName}`);
+      // Normalize and convert to punycode if needed
+      const normalizedSpace = normalizeSpace(search);
+      const punycodeSpace = spaceToPunycode(normalizedSpace);
+      
+      route(`/space/${encodeURIComponent(punycodeSpace)}`);
       setSearch('');
     }
   };

@@ -1,5 +1,5 @@
 import { ListingResponse } from '../api';
-import { formatBTC } from '../helpers';
+import { formatBTC, spaceToUnicode } from '../helpers';
 
 interface ListingCardProps {
   listing: ListingResponse;
@@ -11,7 +11,18 @@ export default function ListingCard({ listing, currentPage }: ListingCardProps) 
     return `${address.slice(0, 6)}...${address.slice(-6)}`;
   };
   
-  const listingUrl = `/space/${listing.space}?from=${currentPage}`;
+  // Check if the space name is in punycode format
+  const isPunycode = listing.space.includes('xn--');
+  
+  // Get display version (if it's punycode, convert to unicode for display)
+  let displaySpace = listing.space;
+  let unicodeVersion = '';
+  
+  if (isPunycode) {
+    unicodeVersion = spaceToUnicode(listing.space);
+  }
+  
+  const listingUrl = `/space/${encodeURIComponent(listing.space)}?from=${currentPage}`;
   
   return (
     <a 
@@ -20,7 +31,9 @@ export default function ListingCard({ listing, currentPage }: ListingCardProps) 
     >
       <div class="bg-white border rounded-lg p-6 shadow-sm hover:shadow-md">
         <div class="flex justify-between items-start mb-4">
-          <h2 class="text-xl font-semibold text-gray-900">@{listing.space}</h2>
+          <h2 class="text-xl font-semibold text-gray-900">
+            @{displaySpace} {isPunycode && unicodeVersion && `(${unicodeVersion})`}
+          </h2>
           <span class="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-medium">
             {formatBTC(listing.price)} 
           </span>
