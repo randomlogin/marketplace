@@ -12,7 +12,6 @@ import (
 	"github.com/spacesprotocol/explorer-indexer/pkg/node"
 )
 
-// withLogging wraps the buildHandler method with logging
 func withLogging(handler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()

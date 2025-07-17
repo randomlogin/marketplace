@@ -157,6 +157,14 @@ func (a *Action) BuildHandler(tx *pgxpool.Pool, spacesClient node.SpacesClient) 
 
 		if !out[1].IsNil() {
 			err := out[1].Interface().(error)
+
+			errMsg := err.Error()
+			if strings.Contains(errMsg, "no listing found") || strings.Contains(errMsg, "not found") {
+				w.WriteHeader(http.StatusNotFound)
+				json.NewEncoder(w).Encode(map[string]string{"error": errMsg})
+				return
+			}
+
 			log.Printf("handler error: %v", err)
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
