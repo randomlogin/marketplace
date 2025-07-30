@@ -39,6 +39,8 @@ github.com/spacesprotocol/explorer-indexer v0.0.0-20250212142903-90f68ee6f803 h1
 github.com/spacesprotocol/explorer-indexer v0.0.0-20250212142903-90f68ee6f803/go.mod h1:yilmP0/mrjDA+Ve5GQfaL/f2kz5xuj0tmrC/gbMTGeI=
 github.com/spacesprotocol/explorer-indexer v0.0.0-20250213161401-ffa26fba33ce h1:CybqsFTTCGkrXHBa/dUpUpW0uKx+sqBkS3/65axEd40=
 github.com/spacesprotocol/explorer-indexer v0.0.0-20250213161401-ffa26fba33ce/go.mod h1:yilmP0/mrjDA+Ve5GQfaL/f2kz5xuj0tmrC/gbMTGeI=
+github.com/spacesprotocol/explorer-indexer v0.0.0-20250730145506-ec63772ad0b5 h1:0QQ2uuABcAp5Sc7EvH9VKzNWL2rPpRTUtDdBsUbyhzo=
+github.com/spacesprotocol/explorer-indexer v0.0.0-20250730145506-ec63772ad0b5/go.mod h1:yilmP0/mrjDA+Ve5GQfaL/f2kz5xuj0tmrC/gbMTGeI=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
 github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
