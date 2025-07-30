@@ -15,7 +15,7 @@ import (
 
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
-	spacesClient := node.NewClient(os.Getenv("SPACES_NODE_URI"), "test", "test")
+	spacesClient := node.NewClient(os.Getenv("SPACES_NODE_URI"), os.Getenv("RPC_USER"), os.Getenv("RPC_PASSWORD"))
 	updateInterval, err := strconv.Atoi(os.Getenv("UPDATE_DB_INTERVAL"))
 	if err != nil {
 		log.Fatalln(err)
