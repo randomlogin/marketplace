@@ -4,7 +4,7 @@ import { getSpaceListing, ListingResponse } from './api';
 import CopyCommand from './components/CopyCommand';
 import { NETWORK, getSpaceExplorerLink } from './constants';
 import { Ghost } from 'lucide-react';
-import { normalizeSpace, formatBTC, spaceToUnicode, isPunycode } from "./helpers";
+import { normalizeSpace, formatBTC, spaceToUnicode, isPunycode, formatSpaceName } from "./helpers";
 
 interface Props {
   name: string;
@@ -15,6 +15,7 @@ export default function ViewListing({ name }: Props) {
   const [listing, setListing] = useState<ListingResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+const [jsonCopied, setJsonCopied] = useState(false);
 
   useEffect(() => {
     if (name) {
@@ -50,6 +51,28 @@ export default function ViewListing({ name }: Props) {
     if (!listing) return '';
     return `space-cli --chain ${NETWORK} buy ${listing.space} ${listing.price} --seller ${listing.seller} --signature ${listing.signature} `;
   };
+
+  const copyListingJSON = async () => {
+  if (!listing) return;
+
+  // Only include the 4 fields you want
+  const filteredListing = {
+    space: formatSpaceName(listing.space),
+    price: listing.price,
+    seller: listing.seller,
+    signature: listing.signature
+  };
+
+  try {
+    const jsonString = JSON.stringify(filteredListing, null, 2);
+    await navigator.clipboard.writeText(jsonString);
+    setJsonCopied(true);
+    setTimeout(() => setJsonCopied(false), 2000);
+  } catch (err) {
+    console.error('Failed to copy JSON:', err);
+  }
+};
+  
 
   if (loading) {
     return (
@@ -118,6 +141,7 @@ export default function ViewListing({ name }: Props) {
     }
   }
 
+
   return (
     <div className="bg-white rounded-lg shadow-xl max-w-2xl mx-auto">
       <div className="p-6">
@@ -167,7 +191,33 @@ export default function ViewListing({ name }: Props) {
                   {listing.signature}
                 </div>
               </div>
+<div className="flex justify-between items-center">
+  <button
+    onClick={copyListingJSON}
+    className={`w-full px-4 py-2 border border-gray-300 hover:bg-gray-50 text-gray-700 rounded-lg flex items-center justify-center gap-2 transition-colors ${
+      jsonCopied ? 'bg-gray-50' : 'bg-white'
+    }`}
+  >
+    {jsonCopied ? (
+      <>
+        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+        </svg>
+        Copied!
+      </>
+    ) : (
+      <>
+        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+            d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+        </svg>
+        Copy listing
+      </>
+    )}
+  </button>
+</div>
             </div>
+
           </div>
           <div className="border-t border-gray-200 pt-6">
             <div>
