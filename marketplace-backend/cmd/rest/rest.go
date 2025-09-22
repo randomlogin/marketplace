@@ -29,7 +29,7 @@ func main() {
 	}
 	defer pg.Close()
 
-	client := node.NewClient(os.Getenv("SPACES_NODE_URI"), "test", "test")
+	client := node.NewClient(os.Getenv("SPACES_NODE_URI"), os.Getenv("RPC_USER"), os.Getenv("RPC_PASSWORD"))
 	spacesClient := node.SpacesClient{Client: client}
 
 	getListing := NewAction(http.MethodGet, getListingHandler)
