@@ -142,3 +142,8 @@ export function spaceToPunycode(space: string): string {
     }
   }
 }
+
+
+export function formatSpaceName(spaceName: string) {
+  return spaceName.startsWith('@') ? spaceName : `@${spaceName}`;
+};
